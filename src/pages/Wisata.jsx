@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Wisata() {
+    const navigate = useNavigate();
+    
     const [wisata, setWisata] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -20,6 +23,38 @@ export default function Wisata() {
     useEffect(() => {
         getWisata();
     }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Yakin ingin menghapus wisata ini?")) {
+            try {
+                const res = await fetch(`http://localhost:3001/wisata/${id}`, {
+                    method: "DELETE",
+                });
+                if (res.ok) {
+                    alert("Wisata berhasil dihapus!");
+                    getWisata(); // ambil ualng data terbaru
+                } else {
+                    alert("Gagal menghapus wisata");
+                }
+            } catch (err) {
+                console.error("Error saat delete:", err);
+                alert("Terjadi kesalahan saat menghapus wisata");
+            }
+        }
+    };
+
+    const handleEdit = (id) => {
+        navigate(`/wisata/edit/${id}`);
+    };
+
+    <td>
+        <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(item.id_wisata)}>
+            Edit
+        </button>
+        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.id_wisata)}>
+            Delete
+        </button>
+    </td>
 
     if (loading) {
         return <div className="container mt-4">Sedang memuat data...</div>
@@ -40,6 +75,8 @@ export default function Wisata() {
                         <th>Nama Wisata</th>
                         <th>Deskripsi</th>
                         <th>Harga Tiket</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,6 +87,16 @@ export default function Wisata() {
                                 <td>{item.nama_wisata}</td>
                                 <td>{item.deskripsi}</td>
                                 <td>Rp {item.harga_tiket}</td>
+                                <td>
+                                    <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(item.id_wisata)}>
+                                        Edit
+                                    </button>
+                                </td>
+                                <td>
+                                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.id_wisata)}>
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         ))
                     ) : (
