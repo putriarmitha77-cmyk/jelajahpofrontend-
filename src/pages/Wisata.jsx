@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Wisata() {
     const navigate = useNavigate();
-    
+
     const [wisata, setWisata] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,6 +29,9 @@ export default function Wisata() {
             try {
                 const res = await fetch(`http://localhost:3001/wisata/${id}`, {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
                 });
                 if (res.ok) {
                     alert("Wisata berhasil dihapus!");
